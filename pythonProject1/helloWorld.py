@@ -8,15 +8,15 @@ class Library:
 # bunu kullanırken de dosyayla işim bittiğinde kapatmak için dosya.close() yapmam gerekiyordu.
 # Bunun yerine metotdan çıkınca dosyayı otomatik olarak kapatan with ön ekini kullanmaya karar verdim.
     def BookAdd(self, bookName, author, date, pages):
+        lowBookName = bookName.lower()
         if bookName.isspace() or bookName=="":
             return "space"
         with open("books.txt",
                   "r") as file:  # With keywordü dosyayı açar ve metotdan çıktığında otomatik olarak kapatır.
             books = file.read().splitlines()
-            lowBookName = bookName.lower()
         with open("books.txt", "a+") as file:
             for book in books:
-                if book.lower().split(",")[0]==lowBookName:     # Burada ilk önce " if book.lower().startswith(lowBookName): " bu
+                if book.split(",")[0].lower() == lowBookName:     # Burada ilk önce " if book.lower().startswith(lowBookName): " bu
                     return False                                # kodu kullanıyordum ama bu kod bazı inputlarda hata veriyordu.
             file.write(f"{bookName},{author},{date},{pages}\n") # Örneğine Selami kitabı ekleyip ardından Sel kitabı ekleyince Selami Sel ile
             return True                                         # başladığı için böyle bir kitap var hatası veriyordu. Halbuki Sel farklı kitap.
@@ -26,6 +26,7 @@ class Library:
             # eğer silinecek kitapa denk gelmediyse böyle bir kitap yoktur ve sonuç olarak false döndürerek hata verecektir.
 
     def BookRemove(self, removeName):
+        removeName=removeName.lower().strip()
         with open("books.txt", "r") as file:
             books = file.read().splitlines()
             if len(books) == 0:
@@ -36,7 +37,7 @@ class Library:
         with open("books.txt", "w") as file:
             control = False
             for book in books:
-                if not book.lower().split(",")[0]==removeName:
+                if not book.split(",")[0].lower()==removeName:
                     file.write(book+"\n")
                 else:
                     control = True
@@ -70,6 +71,7 @@ def main():
                 author = input("Kitabın yazarı : ").strip()
                 date = input("Kitabın yayımlanma tarihi : ").strip()
                 pages = input("Sayfa sayısı : ").strip()
+
                 result = lib.BookAdd(name, author, date, pages)
                 if result == "space":
                     print("\n!Geçersiz giriş\n")
@@ -83,7 +85,7 @@ def main():
 
             while True:
                 with open("books.txt", "r") as file:
-                    name = input("Silmek istediğiniz kitabın ismi : ").lower().strip()
+                    name = input("Silmek istediğiniz kitabın ismi : ")
                     result = lib.BookRemove(name)
                     if result == string.whitespace:
                         print("\n!Listede silinecek kitap yok\n")

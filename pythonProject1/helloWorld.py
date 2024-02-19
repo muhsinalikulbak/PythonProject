@@ -4,14 +4,16 @@ import string
 class Library:
     def __init__(self):
         self.library = open("books.txt", "w")
-
+# Not : İlk önce open("books.txt","w") yani sadece open kullanıyordum aşağıdaki kodlarda
+# bunu kullanırken de dosyayla işim bittiğinde kapatmak için dosya.close() yapmam gerekiyordu.
+# Bunun yerine metotdan çıkınca dosyayı otomatik olarak kapatan with ön ekini kullanmaya karar verdim.
     def BookAdd(self, bookName, author, date, pages):
-        if bookName==""or bookName==" "or bookName == "  ":
-            return string.whitespace
+        if bookName.isspace() or bookName=="":
+            return "space"
         with open("books.txt",
                   "r") as file:  # With keywordü dosyayı açar ve metotdan çıktığında otomatik olarak kapatır.
             books = file.read().splitlines()
-            lowBookName=bookName.lower()
+            lowBookName = bookName.lower()
         with open("books.txt", "a+") as file:
             for book in books:
                 if book.lower().startswith(lowBookName):
@@ -28,26 +30,26 @@ class Library:
             books = file.read().splitlines()
             if len(books) == 0:
                 return string.whitespace
-            elif removeName=="":
+            elif removeName == "":
                 return False
 
         with open("books.txt", "w") as file:
             control = False
             for book in books:
                 if not book.lower().startswith(removeName):
-                    file.write(book)
+                    file.write(book+"\n")
                 else:
                     control = True
             return control
-
 
     def BookList(self):
         with open("books.txt", "r") as file:
             list = file.read().splitlines()  ## list = file.readlines()
         print("\n")
         for i in list:
-            print("Book : " + i) # Book classı oluştursaydık satır satır kitap ismi yazarını yazdırabilirdik. Yine yapabiliriz ama book classı
-                                 # ile yapmak daha iyi ve temiz olacağı için burada bunu yapmak istemedim :D
+            print(
+                "Book : " + i)  # Book classı oluştursaydık satır satır kitap ismi yazarını yazdırabilirdik. Yine yapabiliriz ama book classı
+            # ile yapmak daha iyi ve temiz olacağı için burada bunu yapmak istemedim :D
 
 
 def main():
@@ -55,12 +57,12 @@ def main():
     while True:
         choice = input("""
         ******Hoş geldiniz******
-    
+
         Kitap ekleme --> 1
         Kitap silme --> 2
         Kitap listeleme --> 3
         Çıkış yapma --> Q
-        
+
         Seçim --> """)
         if choice == "1":
             while True:
@@ -68,8 +70,8 @@ def main():
                 author = input("Kitabın yazarı : ")
                 date = input("Kitabın yayımlanma tarihi : ")
                 pages = input("Sayfa sayısı : ")
-                result =lib.BookAdd(name, author, date, pages)
-                if result ==string.whitespace:
+                result = lib.BookAdd(name, author, date, pages)
+                if result == "space":
                     print("\n!Geçersiz giriş\n")
                 elif result:
                     print("\nKitabı rafımıza ekledik\n")
@@ -90,19 +92,19 @@ def main():
                         print("\nKitabı raftan süpürdük\n")
                         break
                     else:
-                     cont =False
-                     print("\nBöyle bir kitabı aradık ardık bulamadık\n")
-                     while True:
-                            choice=input("\n\nMenü için --> 1\nTekrar denemek için --> 2 \nSeçim : ")
-                            if choice =="1":
-                                cont=True
+                        cont = False
+                        print("\nBöyle bir kitabı aradık ardık bulamadık\n") #Burada "" empty ya da "  " whitespace girilse bile
+                        while True:                                          # bu hatayı vericektir çünkü zaten bunları ekleyemeceği için bu kitapları da bulamayacak.
+                            choice = input("\n\nMenü için --> 1\nTekrar denemek için --> 2 \nSeçim : ")
+                            if choice == "1":
+                                cont = True
                                 break
-                            elif choice=="2":
+                            elif choice == "2":
                                 break
                             else:
                                 print("\n!Geçersiz seçim")
                     if cont:
-                     break
+                        break
 
 
 
@@ -116,5 +118,7 @@ def main():
         #             Aslında break ile while'ı kırsam metodun başka yapacağı iş olmadığı için yine metotdan çıkar
         else:
             print("\nGeçersiz seçim tekrar deneyiniz.")
+
+
 
 main()
